@@ -26,3 +26,27 @@ Use the project in [tp3-balanced-strings](../code/tp3-balanced-strings) to compl
 
 ## Answer
 
+1) Voici les blocs de partionnement qui seront à vérifier et les résultat qui sont censer renvoyer
+Chaîne vide : "" return True.
+Chaîne sans symboles de parenthèses : "abc", "123" return True. 
+Chaîne bien formée avec des symboles correctement imbriqués : "{}", "[] return True.
+", "()" et des versions imbriquées plus complexes comme "{[]()}", "{[()]}" return True.
+
+Chaîne avec un seul symbole d'ouverture ou de fermeture : "{", "[", "(", "}", "]", ")" return False
+Chaîne mal formée avec des symboles d'ouverture non fermés : "({[", "{[()"} return False
+Chaîne mal formée avec des symboles de fermeture avant les ouvertures : "][", ")(}" return False
+Chaîne mal formée avec des symboles mal appariés : "([)]", "{{)}" return False
+
+2) En créant des tests pour chaque blocs de partionnement, nous avons pu observer le pourcentage de couverture assuré par les tests sur le code. Grâce à la fonction testing de VS code, nous avons identifier les zones de codes qui n'étaient pas couvertes par les tests et avons créer de nouveaux tests jusqu'à obtenir une couverture totale du code.
+
+3) Pour évaluer la couverture de choix de base de la ligne:
+ ((c == ')' && open != '(') || (c == '}' && open != '{') || (c == ']' && open != '['))
+ Nous avons décomposer l'expression en 3 conditions, puis nous avons testé toutes les combinaisons de ces conditions, en rajoutant un test supplémentaire: testComplementairePourBCC()
+
+4) 
+- Statistics
+================================================================================
+>> Generated 17 mutations Killed 17 (100%)
+>> Ran 33 tests (1.94 tests per mutation)
+
+En obtenant un score de 100%, cela signifie que tous les mutants ont été tué et que les tests couvrent correctement toutes les branches. 
