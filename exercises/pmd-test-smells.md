@@ -41,5 +41,46 @@ Dans notre cas elle détecte ceci:
     }
 
 On remarque bien que ces 2 méthodes sont des tests mais elles n'ont pas l'annotation @Test, ce qui constitue une violation de la règle.
+Pour les corriger afin qu'elles ne représentent plus de test smells, il faudrait leur rajouter l'annotation @Test avant chaque déclaration de méthode.
+
+On cherche à détecter d'autres tests smells en lançant l'analyseur pmd avec une nouvelle règle:
+pmd check -f text -R category/java/bestpractices.xml/JUnit4SuitesShouldUseSuiteAnnotation -d ../test/commons-col
+lections/ -r report
+
+Cette règle cherche à détecter les suites de tests qui ne respectent pas les normes Junit4. 
+Dans JUnit3, les suites de test été déclarées par une méthode statique suite() cependant avec Junit4, il faut déclarer ce type de tests avec des annotations telles que: @RunWith(Suite.class) et @Suite.SuiteClasses.
+
+Le fichier report.txt indique qu'il y a un code de smells qui a été détecté :
+../test/commons-collections/src/test/java/org/apache/commons/collections4/GuavaTestlibTest.java:55:	JUnit4SuitesShouldUseSuiteAnnotation:	JUnit 4 indicates test suites via annotations, not the suite method.
+
+En vérifiant dans GuavaTestlibTest.java à la ligne 55 :
+    public static Test suite() {
+
+On remarque que l'analyseur a correctement détecté la mauvaise pratique car en effet cette méthode utilise toujours les pratiques de JUnit3. 
+Il faudrait remplacer la ligne 55 par ces 2 lignes:
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+
+Cela permettrait de respecter les normes de JUnit4.
 
 
+Enfin nous faisons une dernière analyse en utilisant une règle qui permet de détecter les tests qui n'utilisent pas d'assert() ou de fail ().
+
+pmd check -f text -R category/java/bestpractices.xml/JUnitTestsShouldIncludeAssert -d ../test/commons-collection
+s/ -r report
+
+Le fichier report.txt indique qu'il y a un code de smells qui a été détecté :
+../test/commons-collections/src/test/java/org/apache/commons/collections4/map/LazyMapTest.java:64:	JUnitTestsShouldIncludeAssert:	JUnit tests should include assert() or fail()
+
+    @Test
+    public void testAnyPredicateEx5() {
+        PredicateUtils.anyPredicate(Collections.emptyList());
+    }
+
+Comme on peut le voir, aucun assert n'a été utilisé dans cette méthode de test. On peut corriger cette méthode de cette manière:
+
+    @Test
+    public void testAnyPredicateEx5() {
+        assertThrows(NullPointerException.class, () -> PredicateUtils.anyPredicate(Collections.emptyList()) null));
+    }
+Cela permet de vérifier que la fonction ne renvoie pas un pointeur nul.

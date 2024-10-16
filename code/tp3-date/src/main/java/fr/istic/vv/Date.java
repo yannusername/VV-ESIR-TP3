@@ -35,7 +35,7 @@ class Date implements Comparable<Date> {
         }
 
         if (month==2){ // Cas du mois de février en prenant en compte les années bisextilles 
-            if (year%4 ==0){
+            if (isLeapYear(year)){
                 if (day>29){
                     return false;
                 }
@@ -50,7 +50,7 @@ class Date implements Comparable<Date> {
         return true;
     }
 
-    public static boolean isLeapYear(int year) { return year%4==0;}
+    public static boolean isLeapYear(int year) { return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);}
 
     public Date nextDate() {
         int[] month_30 = {4, 6, 9, 11};
@@ -81,7 +81,7 @@ class Date implements Comparable<Date> {
         }
 
             // Cas du mois de février en prenant en compte les années bisextilles 
-        if (this.year%4 ==0){
+        if (isLeapYear(this.year)){
             if (day==29){
                 return new Date(1, this.month+1, this.year);
             }
@@ -127,7 +127,7 @@ class Date implements Comparable<Date> {
                         }
                     }
                     if (this.month-1==2){
-                        if (this.year%4 ==0){
+                        if (isLeapYear(year)){
                             return new Date(29, this.month-1, this.year);
                         }
                         else{
